@@ -14,7 +14,131 @@
     
     <script type="text/processing">
     
-      /*  INSERT CODE HERE */
+      float gravity;
+ArrayList burst;
+ArrayList sparks;
+int value;
+float updateBurst;
+
+
+void setup(){
+  size(1400,1600);
+  background(0,0,0);
+  burst= new ArrayList();
+  println (burst.size());
+  textSize(30);
+  text("Clear",width-170,70);
+  rect(width-200, 40, 150,40);
+}
+
+
+void draw() {    
+ 
+
+  noStroke();
+  fill(value);              
+
+  for (int i = burst.size() - 1; i >= 0; i--) {
+    Burst b = (Burst)burst.get(i);
+    if (b.updateBurst()){
+        burst.remove(i);
+        println ("removed");
+     
+    }
+  }
+ 
+
+}
+
+void mousePressed(){
+  int x = int(random(10,300));
+  burst.add(new Burst(mouseX, mouseY, x));
+  println (x);
+  background(0);
+}
+
+class Burst{
+  float gravity;
+  ArrayList sparks;
+
+  Burst (float x,  float y, int qty){
+    sparks = new ArrayList();
+    gravity = 0.6;
+    color c = color(random(90, 255), random(90, 255), random(90, 255));
+ 
+  for (int i = 0; i < qty; i++){        
+     float vx = random(-20, 20);
+     float vy = random(0, 20);
+     if (random(1) < 0.8){
+      vy *= -2.5;
+      sparks.add(new Spark(x, y, vx, vy, c));
+
+
+     }
+     
+  }
+  print ("sparks size " + sparks.size());
+  }
+ 
+ 
+  boolean updateBurst(){
+    for (int i = sparks.size() - 5; i >= 0; i--){
+      Spark p = (Spark)sparks.get(i);
+      p.speedUp(gravity);
+      if (p.updateBurst()){
+        sparks.remove(i);
+        fill(0);
+       
+   
+   
+     
+
+      }
+    }
+     
+    return sparks.size() == 0;
+   
+  }
+
+ 
+}  
+ 
+  class Spark{
+  float x;
+  float y;
+  float vx;
+  float vy;
+  color c;
+
+
+ 
+  Spark (float x, float y, float vx, float vy, color c){
+   
+    this.x = x;
+    this.y = y;
+    this.vx = vx;
+    this.vy = vy;
+    this.c = c;
+  }
+ 
+  void speedUp(float x) {
+    vy += x;
+  }
+ 
+ 
+  boolean updateBurst() {
+    float px = x;
+    float py = y;
+    x += vx;
+    y += vy;
+    stroke(c);
+    line(px, py, x, y);
+    return y > height ||x <0 || x > width;
+
+ 
+  }
+}
+
     </script>
     <canvas id="sketch" style="border: 1px solid black;"></canvas>
     
